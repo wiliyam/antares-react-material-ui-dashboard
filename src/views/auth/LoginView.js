@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import Snackbar from '@material-ui/core/Snackbar';
+
 import {
   Box,
   Button,
@@ -15,6 +17,9 @@ import {
 import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
+import PositionedSnackbar from '../../components/toast';
+
+const axios = require('axios');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,15 +30,65 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const API_URL = 'http://localhost:8000';
+const authApi = () => new Promise((res, rej) => {
+  console.log('----', `${API_URL}/auth/`);
+  axios.post(`${API_URL}/auth/`, {
+    email: 'email',
+    loginType: 1,
+    phone: 9664593109,
+    userType: 1
+  }).then((response) => {
+    res(response);
+  })
+    .catch((error) => {
+      console.log(error);
+      rej(error);
+    });
+});
+
 const LoginView = () => {
+  const [isToast, setToast] = useState(false);
+  const [msg, setMsg] = useState('..');
+
   const classes = useStyles();
   const navigate = useNavigate();
+
+  const login = async (...params) => {
+    // console.log(params);
+    const data = params[0];
+    // await setUser(data.user);
+    // await setPass(data.password);
+    try {
+      setToast(true);
+      let isAuth = false;
+      const res = await authApi();
+      console.log('res--->', res);
+      if (res.status == 200) {
+        setMsg('login called-....', JSON.stringify(res));
+        console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+        if (data.email === 'wiliyam@gmail.com' && data.password === '3embed') {
+          console.log('====================================');
+          isAuth = true;
+        }
+
+        if (isAuth) { return navigate('/app/dashboard', { replace: true }); }
+        setMsg('maniya jevo no tha pass sacho nakh....');
+      }
+    } catch (error) {
+      setMsg('maniya lund....');
+      console.log('error-->', error);
+    }
+
+    console.log('---');
+  };
 
   return (
     <Page
       className={classes.root}
       title="Login"
     >
+      <PositionedSnackbar isOpen={isToast} msg={msg} />
       <Box
         display="flex"
         flexDirection="column"
@@ -50,9 +105,7 @@ const LoginView = () => {
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
-            }}
+            onSubmit={login}
           >
             {({
               errors,
