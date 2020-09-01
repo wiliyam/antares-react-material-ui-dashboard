@@ -129,7 +129,7 @@ const LoginView = () => {
                       gutterBottom
                       variant="body2"
                     >
-                      Sign in on the internal platform
+                      Welcome to exwhere superadmin nice to see you back!
                   </Typography>
                   </Box>
                   {/* <Grid
