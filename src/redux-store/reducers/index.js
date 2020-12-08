@@ -1,5 +1,4 @@
 const initState = {
-    loading: false,
     auth: false
 };
 

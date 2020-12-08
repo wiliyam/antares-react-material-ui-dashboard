@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Snackbar from '@material-ui/core/Snackbar';
 import Logo from 'src/components/Logo';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 
 import {
   Box,
@@ -27,13 +27,13 @@ import PositionedSnackbar from '../../components/toast';
 
 const axios = require('axios');
 
-store.subscribe(getStoreData);
+// store.subscribe(getStoreData);
 
-function getStoreData() {
-  const data = store.getState();
-  console.log('store data---->>', data);
-  return data;
-}
+// function getStoreData() {
+//   const data = store.getState();
+//   console.log('store data---->>', data);
+//   return data;
+// }
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,13 +61,36 @@ const authApi = () => new Promise((res, rej) => {
     });
 });
 
-const LoginView = () => {
+//redux
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth.auth
+  }
+}
+const mapDispatchProps = (dispacth) => {
+  return {
+    authEnable: () => dispacth({ type: "ENABLE" }),
+    authDisable: () => dispacth({ type: "DISABLE" })
+  }
+}
+
+const LoginView = (props) => {
   const [isToast, setToast] = useState(false);
   const [msg, setMsg] = useState('..');
 
+
+  useEffect(() => {
+    console.log("component updated", props);
+    setMsg('logged in...');
+    if (props.auth) {
+      setMsg('logged in...');
+      localStorage.setItem('auth', "true");
+      return navigate('/app/dashboard', { replace: true });
+    }
+  });
+
   const classes = useStyles();
   const navigate = useNavigate();
-
   const login = async (...params) => {
     // console.log(params);
     const data = params[0];
@@ -82,20 +105,17 @@ const LoginView = () => {
       let isAuth = false;
       // const dispatch = useDispatch();
       if (data.email === 'wiliyam@gmail.com' && data.password === '3embed') {
-        console.log('====================================');
-        isAuth = true;
-        // dispatch(authEnable);
-        if (isAuth) { return navigate('/app/dashboard', { replace: true }); }
-        setMsg('logged in...');
+        // console.log('====================================', props);
+
+        props.authEnable()
+
       } else {
         const res = await authApi();
         console.log('res--->', res);
         if (res.status == 200) {
           setMsg('login called-....', JSON.stringify(res));
-          console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-          isAuth = true;
-          if (isAuth) { return navigate('/app/dashboard', { replace: true }); }
-          setMsg('logged in...');
+          console.log('success res from api..');
+          props.authEnable()
         }
       }
     } catch (error) {
@@ -121,8 +141,8 @@ const LoginView = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'example@email.com',
-              password: 'my password'
+              email: 'wiliyam@gmail.com',
+              password: '3embed'
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
@@ -267,4 +287,4 @@ const LoginView = () => {
   );
 };
 
-export default LoginView;
+export default connect(mapStateToProps, mapDispatchProps)(LoginView);

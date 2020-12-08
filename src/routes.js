@@ -10,17 +10,22 @@ import NotFoundView from 'src/views/errors/NotFoundView';
 import ProductListView from 'src/views/product/ProductListView';
 import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
+import AppSettingsView from 'src/views/appSettings'
+import Logout from 'src/views/logout'
+import ProtectedRoute from './protected'
 
 const routes = [
   {
     path: 'app',
     element: <DashboardLayout />,
     children: [
-      { path: 'account', element: <AccountView /> },
-      { path: 'customers', element: <CustomerListView /> },
-      { path: 'dashboard', element: <DashboardView /> },
-      { path: 'products', element: <ProductListView /> },
-      { path: 'settings', element: <SettingsView /> },
+      { path: 'account', element: <ProtectedRoute component={AccountView} /> },
+      { path: 'customers', element: <ProtectedRoute component={CustomerListView} /> },
+      { path: 'dashboard', element: <ProtectedRoute component={DashboardView} /> },
+      { path: 'products', element: <ProtectedRoute component={ProductListView} /> },
+      { path: 'settings', element: <ProtectedRoute component={SettingsView} /> },
+      { path: 'configuration', element: <ProtectedRoute component={AppSettingsView} /> },
+      { path: 'logout', element: <ProtectedRoute component={Logout} /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
