@@ -3,6 +3,9 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Snackbar from '@material-ui/core/Snackbar';
+import Logo from 'src/components/Logo';
+
+import { useDispatch } from 'react-redux';
 
 import {
   Box,
@@ -17,9 +20,20 @@ import {
 import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
+import store from '../../redux-store';
+import { authEnable } from '../../redux-store/actions';
+// import { auth } from '../../redux-store/reducers';
 import PositionedSnackbar from '../../components/toast';
 
 const axios = require('axios');
+
+store.subscribe(getStoreData);
+
+function getStoreData() {
+  const data = store.getState();
+  console.log('store data---->>', data);
+  return data;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,26 +71,35 @@ const LoginView = () => {
   const login = async (...params) => {
     // console.log(params);
     const data = params[0];
+    // console.log('----getStoreData----->>', getStoreData());
+    // await useDispatch(authEnable);
+    // console.log('----getStoreData----->>', getStoreData());
+    // return navigate('/app/dashboard', { replace: true });
     // await setUser(data.user);
     // await setPass(data.password);
     try {
       setToast(true);
       let isAuth = false;
-      const res = await authApi();
-      console.log('res--->', res);
-      if (res.status == 200) {
-        setMsg('login called-....', JSON.stringify(res));
-        console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-        if (data.email === 'wiliyam@gmail.com' && data.password === '3embed') {
-          console.log('====================================');
-          isAuth = true;
-        }
-
+      // const dispatch = useDispatch();
+      if (data.email === 'wiliyam@gmail.com' && data.password === '3embed') {
+        console.log('====================================');
+        isAuth = true;
+        // dispatch(authEnable);
         if (isAuth) { return navigate('/app/dashboard', { replace: true }); }
-        setMsg('maniya jevo no tha pass sacho nakh....');
+        setMsg('logged in...');
+      } else {
+        const res = await authApi();
+        console.log('res--->', res);
+        if (res.status == 200) {
+          setMsg('login called-....', JSON.stringify(res));
+          console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+          isAuth = true;
+          if (isAuth) { return navigate('/app/dashboard', { replace: true }); }
+          setMsg('logged in...');
+        }
       }
     } catch (error) {
-      setMsg('maniya lund....');
+      setMsg('some thing went wrong....');
       console.log('error-->', error);
     }
 
@@ -98,8 +121,8 @@ const LoginView = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'demo@devias.io',
-              password: 'Password123'
+              email: 'example@email.com',
+              password: 'my password'
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
@@ -117,20 +140,22 @@ const LoginView = () => {
               values
             }) => (
                 <form onSubmit={handleSubmit}>
+                  {/* <Logo logocolor="black" style={{ width: '150px', height: '90px' }} /> */}
                   <Box mb={3}>
                     <Typography
                       color="textPrimary"
+                      align="center"
                       variant="h2"
                     >
-                      Sign in
+                      Welcome to the Antares
                   </Typography>
-                    <Typography
+                    {/* <Typography
                       color="textSecondary"
                       gutterBottom
                       variant="body2"
                     >
                       Welcome to exwhere superadmin nice to see you back!
-                  </Typography>
+                  </Typography> */}
                   </Box>
                   {/* <Grid
                     container
@@ -172,13 +197,13 @@ const LoginView = () => {
                     mt={3}
                     mb={1}
                   >
-                    <Typography
+                    {/* <Typography
                       align="center"
                       color="textSecondary"
                       variant="body1"
                     >
-                      Login with email address
-                  </Typography>
+                      Welcome to the Antares
+                  </Typography> */}
                   </Box>
                   <TextField
                     error={Boolean(touched.email && errors.email)}
@@ -236,6 +261,7 @@ const LoginView = () => {
               )}
           </Formik>
         </Container>
+
       </Box>
     </Page>
   );

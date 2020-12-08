@@ -215,7 +215,7 @@ NavBar.propTypes = {
 };
 
 NavBar.defaultProps = {
-  onMobileClose: () => {},
+  onMobileClose: () => { },
   openMobile: false
 };
 
