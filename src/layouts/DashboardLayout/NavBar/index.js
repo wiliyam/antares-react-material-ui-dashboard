@@ -20,7 +20,8 @@ import {
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  LogOut as UserLogoutIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -47,6 +48,11 @@ const items = [
     title: 'Products'
   },
   {
+    href: '/register',
+    icon: UserPlusIcon,
+    title: 'Register'
+  },
+  {
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
@@ -63,18 +69,8 @@ const items = [
   },
   {
     href: '/app/logout',
-    icon: LockIcon,
+    icon: UserLogoutIcon,
     title: 'Logout'
-  },
-  {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
-  },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
   }
 ];
 

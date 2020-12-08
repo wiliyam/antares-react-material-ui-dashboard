@@ -21,9 +21,9 @@ const Logout = () => {
   const classes = useStyles();
 
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log("handleLogout--->>")
-    localStorage.setItem('auth', "false");
+    await localStorage.setItem('auth', "false");
   }
   handleLogout()
   return (
