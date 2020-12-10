@@ -19,13 +19,13 @@ const routes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
-      { path: 'account', element: <ProtectedRoute component={AccountView} /> },
-      { path: 'customers', element: <ProtectedRoute component={CustomerListView} /> },
-      { path: 'dashboard', element: <ProtectedRoute component={DashboardView} /> },
-      { path: 'products', element: <ProtectedRoute component={ProductListView} /> },
-      { path: 'settings', element: <ProtectedRoute component={SettingsView} /> },
-      { path: 'configuration', element: <ProtectedRoute component={AppSettingsView} /> },
-      { path: 'logout', element: <ProtectedRoute component={Logout} /> },
+      { path: 'account', element: <ProtectedRoute component={AccountView} isAuthcomp={false} /> },
+      { path: 'customers', element: <ProtectedRoute component={CustomerListView} isAuthcomp={false} /> },
+      { path: 'dashboard', element: <ProtectedRoute component={DashboardView} isAuthcomp={false} /> },
+      { path: 'products', element: <ProtectedRoute component={ProductListView} isAuthcomp={false} /> },
+      { path: 'settings', element: <ProtectedRoute component={SettingsView} isAuthcomp={false} /> },
+      { path: 'configuration', element: <ProtectedRoute component={AppSettingsView} isAuthcomp={false} /> },
+      { path: 'logout', element: <ProtectedRoute component={Logout} isAuthcomp={false} /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
@@ -33,7 +33,7 @@ const routes = [
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: 'auth', element: <LoginView /> },
+      { path: 'auth', element: <ProtectedRoute component={LoginView} isAuthcomp={true} /> },
       // { path: 'register', element: <RegisterView /> },
       { path: '404', element: <NotFoundView /> },
       // { path: '/', element: <Navigate to="/app/dashboard" /> },

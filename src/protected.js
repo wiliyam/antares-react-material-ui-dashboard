@@ -24,6 +24,11 @@ class ProtectedRoute extends React.Component {
         console.log("isAuthenticated*********************->>", isAuthenticated)
         if (isAuthenticated == "true") {
             console.log("trueeeeeeeeeeeeeeeeeeeeee-")
+            // if (this.props.isAuthcomp) {
+            //     return (
+            //         <Navigate to='/app/dashboard' />
+            //     )
+            // }
             return (
                 <Component />
             )
