@@ -5,6 +5,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
+import { toast } from 'react-toastify';
 
 import { Navigate, useNavigate } from 'react-router-dom'
 
@@ -24,6 +25,15 @@ const Logout = () => {
   const handleLogout = async () => {
     console.log("handleLogout--->>")
     await localStorage.setItem('auth', "false");
+    toast.warn('🦄 Logout successfully...!', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   }
   handleLogout()
   return (

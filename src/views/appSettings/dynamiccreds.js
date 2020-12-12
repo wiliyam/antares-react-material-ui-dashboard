@@ -18,7 +18,9 @@ import {
   TextField,
   Snackbar
 } from '@material-ui/core';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { toast } from 'react-toastify';
 
 import LoaderCom from 'src/components/Loader'
 
@@ -45,57 +47,138 @@ const Dynamiccreds = ({ className, ...rest }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
+  useEffect(() => {
+    // toast.dark(' 🧑🏼‍🚀  Welcome To Anatres...', {
+    //   position: "top-right",
+    //   autoClose: 3000,
+    //   hideProgressBar: false,
+    //   closeOnClick: true,
+    //   pauseOnHover: true,
+    //   draggable: true,
+    //   progress: undefined,
+    // });
+
+    // setMsg('logged in...');
+    if (localStorage.getItem("auth") == "false") {
+      // setMsg('logged in...');
+      // const navigate = useNavigate()
+      // return navigate('/auth', { replace: true });
+    }
+  });
+
+  const headers = {
+    "accept": "application/json",
+    'authorization': localStorage.getItem("token"),
+    'language': "en"
+  }
   const getConfigData = () => new Promise((resolve, reject) => {
     setIsLoading(true)
     const apiurl = API_BASE_URL + "/appConfig?type=0"
     console.log('apiurl---->>', apiurl)
-    axios.get(apiurl).then((response) => {
+
+    console.log("headers--->>", headers)
+    axios.get(apiurl, { headers: headers }).then((response) => {
       // console.log("res-->>", response)
-      if (response.status == 200) {
-        resolve(response.data);
-        setGooglemapkey(response.data.data.keyAndSecrets.googleMapKey)
-        setJwtsecret(response.data.data.keyAndSecrets.jwtSecretKey)
-        setConfigId(response.data.data._id)
-        console.log("state updated", response.data.data)
-        setIsLoading(false)
-      } else {
-        alert(response.status);
-        reject(response);
-        setIsLoading(false)
-      }
+
+      resolve(response.data);
+      setGooglemapkey(response.data.data.keyAndSecrets.googleMapKey)
+      setJwtsecret(response.data.data.keyAndSecrets.jwtSecretKey)
+      setConfigId(response.data.data._id)
+      console.log("state updated", response.data.data)
+      setIsLoading(false)
 
     })
       .catch((error) => {
-        alert(error);
-        reject(error);
+        console.log('error-->', error.response);
+        reject(error.response);
         setIsLoading(false)
+        if (error.response.status == 500) {
+          error.data.message = "Internal server error.."
+        }
+        if (error.response.status == 401) {
+          error.data.message = "Session Expire.."
+          toast.error(error.response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          localStorage.setItem('auth', "false");
+        }
+        setIsLoading(false)
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
       });
   })
 
   const setConfigData = (body) => new Promise((resolve, reject) => {
     const apiurl = API_BASE_URL + "/appConfig"
     console.log('apiurl---->>', apiurl)
-    axios.patch(apiurl, body).then((response) => {
+    console.log('headers---->>', headers)
+    axios.patch(apiurl, body, { headers }).then((response) => {
       // console.log("res-->>", response)
-      if (response.status == 200) {
-        resolve(response.data);
-        console.log("state updated", response.data)
-        setIsLoading(false)
-        getConfigData()
-        // alert("data uodated..");
-      } else {
-        alert(response.status);
-        setIsLoading(false)
-        getConfigData()
-        reject(response);
-      }
+
+      resolve(response.data);
+      console.log("state updated", response.data)
+      setIsLoading(false)
+      toast.success('Data updated...!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      getConfigData()
+      // alert("data uodated..");
+
 
     })
       .catch((error) => {
-        alert(error);
+        console.log('error-->', error.response);
+        reject(error.response);
         setIsLoading(false)
-        getConfigData()
-        reject(error);
+        if (error.response.status == 500) {
+          error.data = {}
+          error.data.message = "Internal server error.."
+        }
+        if (error.response.status == 401) {
+          error.data = {}
+          error.data.message = "Session Expire.."
+          toast.error(error.response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          localStorage.setItem('auth', "false");
+        }
+        setIsLoading(false)
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       });
   })
 
@@ -120,7 +203,8 @@ const Dynamiccreds = ({ className, ...rest }) => {
   }
   return (
     isLoading ? <LoaderCom visible={true} />
-      : <form
+      :
+      <form
         className={clsx(classes.root, className)}
         {...rest}
       >

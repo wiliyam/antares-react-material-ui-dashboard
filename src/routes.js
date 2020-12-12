@@ -33,7 +33,7 @@ const routes = [
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: 'auth', element: <ProtectedRoute component={LoginView} isAuthcomp={true} /> },
+      { path: 'auth', element: <LoginView /> },
       // { path: 'register', element: <RegisterView /> },
       { path: '404', element: <NotFoundView /> },
       // { path: '/', element: <Navigate to="/app/dashboard" /> },
