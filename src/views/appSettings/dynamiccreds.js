@@ -47,24 +47,24 @@ const Dynamiccreds = ({ className, ...rest }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
-  useEffect(() => {
-    // toast.dark(' 🧑🏼‍🚀  Welcome To Anatres...', {
-    //   position: "top-right",
-    //   autoClose: 3000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    // });
+  // useEffect(() => {
+  //   // toast.dark(' 🧑🏼‍🚀  Welcome To Anatres...', {
+  //   //   position: "top-right",
+  //   //   autoClose: 3000,
+  //   //   hideProgressBar: false,
+  //   //   closeOnClick: true,
+  //   //   pauseOnHover: true,
+  //   //   draggable: true,
+  //   //   progress: undefined,
+  //   // });
 
-    // setMsg('logged in...');
-    if (localStorage.getItem("auth") == "false") {
-      // setMsg('logged in...');
-      // const navigate = useNavigate()
-      // return navigate('/auth', { replace: true });
-    }
-  });
+  //   // setMsg('logged in...');
+  //   if (localStorage.getItem("auth") == "false") {
+  //     // setMsg('logged in...');
+  //     // const navigate = useNavigate()
+  //     // return navigate('/auth', { replace: true });
+  //   }
+  // });
 
   const headers = {
     "accept": "application/json",

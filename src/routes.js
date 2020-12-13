@@ -4,6 +4,7 @@ import DashboardLayout from 'src/layouts/DashboardLayout';
 import MainLayout from 'src/layouts/MainLayout';
 import AccountView from 'src/views/account/AccountView';
 import CustomerListView from 'src/views/customer/CustomerListView';
+import AdminsListView from 'src/views/admins/CustomerListView';
 import DashboardView from 'src/views/reports/DashboardView';
 import LoginView from 'src/views/auth/LoginView';
 import NotFoundView from 'src/views/errors/NotFoundView';
@@ -21,6 +22,7 @@ const routes = [
     children: [
       { path: 'account', element: <ProtectedRoute component={AccountView} isAuthcomp={false} /> },
       { path: 'customers', element: <ProtectedRoute component={CustomerListView} isAuthcomp={false} /> },
+      { path: 'admins', element: <ProtectedRoute component={AdminsListView} isAuthcomp={false} /> },
       { path: 'dashboard', element: <ProtectedRoute component={DashboardView} isAuthcomp={false} /> },
       { path: 'products', element: <ProtectedRoute component={ProductListView} isAuthcomp={false} /> },
       { path: 'settings', element: <ProtectedRoute component={SettingsView} isAuthcomp={false} /> },
