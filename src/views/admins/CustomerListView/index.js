@@ -16,6 +16,7 @@ import data from './data';
 
 import { toast } from 'react-toastify';
 import { API_BASE_URL } from "src/variable"
+import CustomBadge from 'src/components/CustomBadge'
 const axios = require('axios');
 
 
@@ -37,6 +38,7 @@ const AdminsListView = () => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState(-1);
+  const [statusWiseCount, setStatusWiseCount] = useState({ pending: 0, all: 0, active: 0, deactive: 0, ban: 0, deleted: 0 });
   const headers = {
     // "accept": "application/json",
     'authorization': localStorage.getItem("token"),
@@ -53,8 +55,34 @@ const AdminsListView = () => {
 
       resolve(response.data);
       setCustomers(response.data.data)
-      setTotalCount(response.data.totalCount)
+      setStatusWiseCount(response.data.statusWiseCount)
       console.log("state totalCount", response.data.totalCount)
+
+      switch (status) {
+        case -1:
+          setTotalCount(response.data.statusWiseCount.all)
+          break;
+        case 0:
+          setTotalCount(response.data.statusWiseCount.pending)
+          break;
+        case 1:
+          setTotalCount(response.data.statusWiseCount.active)
+          break;
+        case 2:
+          setTotalCount(response.data.statusWiseCount.deactive)
+          break;
+        case 3:
+          setTotalCount(response.data.statusWiseCount.ban)
+          break;
+        case 4:
+          setTotalCount(response.data.statusWiseCount.deleted)
+          break;
+        default:
+          setTotalCount(response.data.totalCount)
+          break;
+
+      }
+      console.log("state statusWiseCount", response.data.statusWiseCount)
       console.log("state updated", response.data.data)
       // setIsLoading(false)
 
@@ -161,9 +189,11 @@ const AdminsListView = () => {
 
 
   useEffect(() => {
-    console.log('Inside the useEffect function page', page);
-    console.log('Inside the useEffect function limit', limit);
+    // console.log('Inside the useEffect function page', page);
+    // console.log('Inside the useEffect function limit', limit);
+    console.log('Inside the useEffect function statusWiseCount', statusWiseCount);
     getAdminsData(page, limit, status)
+
   }, [limit, page, status]);
 
   const hadlePageChange = (event, newPage) => {
@@ -196,41 +226,25 @@ const AdminsListView = () => {
           <Tab label={<Badge badgeContent={totalCount} color="primary">
             Active
             </Badge>} value="bxsshbx" /> */}
-          <Button color="primary" onClick={() => hadlestatusChange(-1)}>
-            <Tab label={<Badge badgeContent={totalCount} color="primary">
-              All
-          </Badge>
-            } value="bxsshbx" />
+
+
+          <Button color="primary" mr={3} onClick={() => hadlestatusChange(0)}>
+            <CustomBadge color="#f34f4f" text=" Pending Approval" count={statusWiseCount.pending.toString()} />
           </Button>
-          <Button color="primary" onClick={() => hadlestatusChange(0)}>
-            <Tab label={<Badge badgeContent={totalCount} color="primary">
-              Pending Approval
-          </Badge>
-            } value="bxsshbx" disabled={true} />
+          <Button color="primary" onClick={() => hadlestatusChange(-1)}>
+            <CustomBadge color="#24dce8" text="All" count={statusWiseCount.all.toString()} />
           </Button>
           <Button color="primary" onClick={() => hadlestatusChange(1)}>
-            <Tab label={<Badge badgeContent={totalCount} color="primary">
-              Active
-          </Badge>
-            } value="bxsshbx" />
+            <CustomBadge color="#45b034" text="Active" count={statusWiseCount.active.toString()} />
           </Button>
           <Button color="primary" onClick={() => hadlestatusChange(2)}>
-            <Tab label={<Badge badgeContent={totalCount} color="primary">
-              Deactived
-          </Badge>
-            } value="bxsshbx" />
+            <CustomBadge color="#2f48dc" text="Deactive" count={statusWiseCount.deactive.toString()} />
           </Button>
           <Button color="primary" onClick={() => hadlestatusChange(3)}>
-            <Tab label={<Badge badgeContent={totalCount} color="primary">
-              ban
-          </Badge>
-            } value="bxsshbx" />
+            <CustomBadge color="#81137b" text="ban" count={statusWiseCount.ban.toString()} />
           </Button>
           <Button color="primary" onClick={() => hadlestatusChange(4)}>
-            <Tab label={<Badge badgeContent={totalCount} color="primary">
-              Deleted
-          </Badge>
-            } value="bxsshbx" />
+            <CustomBadge color="#bc0404" text="Deleted" count={statusWiseCount.deleted.toString()} />
           </Button>
         </Box>
         <Box mt={3}>
