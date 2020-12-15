@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -15,9 +15,14 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  makeStyles
+  makeStyles,
+  Button
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
+import CustomizedDialogs from 'src/components/CustomeModalAdmin'
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -26,9 +31,32 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Results = ({ className, customers, onModalClose, ...rest }) => {
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+  const [adminData, setAdminData] = React.useState({});
+  const [isModalEdit, setIsModalEdit] = React.useState(false);
+
+  const idOpen = true
+  const handleClick = (data) => {
+    console.log("-----------------------------------------------------------", data)
+    setAdminData(data)
+    setIsModalEdit(true)
+    // return < FullScreenDialog isOpen={true} data={adminData} />
+  };
+
+  useEffect(() => {
+    console.log("-----------------------------------------------------------", isModalEdit)
+    // setIsModalEdit(false)
+  }, [isModalEdit])
+
+  const modalClose = () => {
+    setIsModalEdit(false)
+    onModalClose()
+
+  }
+
+
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
@@ -57,115 +85,142 @@ const Results = ({ className, customers, ...rest }) => {
         selectedCustomerIds.slice(selectedIndex + 1)
       );
     }
-
+    console.log("newSelectedCustomerIds->", newSelectedCustomerIds)
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
 
 
+
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <PerfectScrollbar>
-        <Box minWidth={1050}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  status
-                </TableCell>
-                <TableCell>
-                  admin Type
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
-                <TableCell>
-                  cityId
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {customers.map((customer) => (
-                <TableRow
-                  hover
-                  key={customer._id}
-                  selected={selectedCustomerIds.indexOf(customer._id) !== -1}
-                >
+    isModalEdit ? <CustomizedDialogs isOpen={true} data={adminData} modalCloseAct={modalClose} /> :
+      <Card
+        className={clsx(classes.root, className)}
+        {...rest}
+      >
+
+        <PerfectScrollbar>
+          <Box minWidth={1050}>
+            <Table>
+
+              <TableHead>
+                <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer._id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer._id)}
-                      value="true"
+                      checked={selectedCustomerIds.length === customers.length}
+                      color="primary"
+                      indeterminate={
+                        selectedCustomerIds.length > 0
+                        && selectedCustomerIds.length < customers.length
+                      }
+                      onChange={handleSelectAll}
                     />
                   </TableCell>
                   <TableCell>
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                    >
-                      <Avatar
-                        className={classes.avatar}
-                        src={customer.profileImg || "https://via.placeholder.com/150"}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
+                    Actiion
+                </TableCell>
                   <TableCell>
-                    {customer.email}
-                  </TableCell>
-
+                    Name
+                </TableCell>
                   <TableCell>
-                    {customer.phone}
-                  </TableCell>
+                    Email
+                </TableCell>
                   <TableCell>
-                    {customer.statusMsg}
-                  </TableCell>
+                    Phone
+                </TableCell>
                   <TableCell>
-                    {customer.adminTypeMsg || ""}
-                  </TableCell>
+                    status
+                </TableCell>
                   <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY') || "not specify"}
-                  </TableCell>
+                    admin Type
+                </TableCell>
                   <TableCell>
-                    {`${customer.cityId || ""}`}
-                  </TableCell>
+                    Registration date
+                </TableCell>
+                  <TableCell>
+                    cityId
+                </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </PerfectScrollbar>
-    </Card>
+              </TableHead>
+              <TableBody>
+                {customers.map((customer) => (
+                  <TableRow
+                    hover
+                    key={customer._id}
+                    selected={selectedCustomerIds.indexOf(customer._id) !== -1}
+                    onClick={() => handleClick(customer)}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedCustomerIds.indexOf(customer._id) !== -1}
+                        onChange={(event) => handleSelectOne(event, customer._id)}
+                        value="true"
+                      />
+                      {/* <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                    >
+                      {
+                        customer.status == 0 || customer.status == 2 || customer.status == 3 || customer.status == 4 ?
+                          <MenuItem onClick={handleClose}>Activate</MenuItem> : <> <MenuItem onClick={handleClose}>Detivate</MenuItem> : <></>
+                            <MenuItem onClick={handleClose}>Ban</MenuItem> : <></></>
+
+
+                      }
+                      <MenuItem onClick={handleClose}>View</MenuItem>
+                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem onClick={handleClose}>Delete</MenuItem>
+                    </Menu> */}
+
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        alignItems="center"
+                        display="flex"
+                      >
+                        <Avatar
+                          className={classes.avatar}
+                          src={customer.profileImg || "https://via.placeholder.com/150"}
+                        >
+                          {getInitials(customer.name)}
+                        </Avatar>
+                        <Typography
+                          color="textPrimary"
+                          variant="body1"
+                        >
+                          {customer.name}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      {customer.email}
+                    </TableCell>
+
+                    <TableCell>
+                      {customer.phone}
+                    </TableCell>
+                    <TableCell>
+                      {customer.statusMsg}
+                    </TableCell>
+                    <TableCell>
+                      {customer.adminTypeMsg || ""}
+                    </TableCell>
+                    <TableCell>
+                      {moment(customer.createdAt).format('DD/MM/YYYY') || "not specify"}
+                    </TableCell>
+                    <TableCell>
+                      {`${customer.cityId || ""}`}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </PerfectScrollbar>
+      </Card >
   );
 };
 

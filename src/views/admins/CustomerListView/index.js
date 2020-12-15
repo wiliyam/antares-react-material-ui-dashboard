@@ -38,6 +38,7 @@ const AdminsListView = () => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [status, setStatus] = useState(-1);
+  const [refresh, setrefresh] = useState(1);
   const [statusWiseCount, setStatusWiseCount] = useState({ pending: 0, all: 0, active: 0, deactive: 0, ban: 0, deleted: 0 });
   const headers = {
     // "accept": "application/json",
@@ -194,7 +195,7 @@ const AdminsListView = () => {
     console.log('Inside the useEffect function statusWiseCount', statusWiseCount);
     getAdminsData(page, limit, status)
 
-  }, [limit, page, status]);
+  }, [limit, page, status, setrefresh]);
 
   const hadlePageChange = (event, newPage) => {
     // console.log("event.target.value-->>", event.target.value)
@@ -207,48 +208,47 @@ const AdminsListView = () => {
     // getAdminsData(page, limit)
   }
 
+  const onModalClose = () => {
+    getAdminsData()
+    setrefresh(1)
+  }
+
   return (
     <Page
       className={classes.root}
       title="Customers"
     >
       <Container maxWidth={false}>
-        <Toolbar />
+        {/* <Toolbar /> */}
+
+
 
         <Box
           display="flex"
           justifyContent="flex-center"
           m={3}
         >
-          {/* <Tab label={<Badge badgeContent={totalCount} color="error">
-          
-            </Badge>} value="bxsshbx" />
-          <Tab label={<Badge badgeContent={totalCount} color="primary">
-            Active
-            </Badge>} value="bxsshbx" /> */}
-
-
-          <Button color="primary" mr={3} onClick={() => hadlestatusChange(0)}>
+          <Button color="primary" mr={3} onClick={() => hadlestatusChange(0)} variant={status == 0 ? "contained" : ""} >
             <CustomBadge color="#f34f4f" text=" Pending Approval" count={statusWiseCount.pending.toString()} />
           </Button>
-          <Button color="primary" onClick={() => hadlestatusChange(-1)}>
+          <Button color="primary" variant={status == -1 ? "contained" : ""} onClick={() => hadlestatusChange(-1)}>
             <CustomBadge color="#24dce8" text="All" count={statusWiseCount.all.toString()} />
           </Button>
-          <Button color="primary" onClick={() => hadlestatusChange(1)}>
+          <Button color="primary" onClick={() => hadlestatusChange(1)} variant={status == 1 ? "contained" : ""}>
             <CustomBadge color="#45b034" text="Active" count={statusWiseCount.active.toString()} />
           </Button>
-          <Button color="primary" onClick={() => hadlestatusChange(2)}>
+          <Button color="primary" onClick={() => hadlestatusChange(2)} variant={status == 2 ? "contained" : ""} >
             <CustomBadge color="#2f48dc" text="Deactive" count={statusWiseCount.deactive.toString()} />
           </Button>
-          <Button color="primary" onClick={() => hadlestatusChange(3)}>
+          <Button color="primary" onClick={() => hadlestatusChange(3)} variant={status == 3 ? "contained" : ""} >
             <CustomBadge color="#81137b" text="ban" count={statusWiseCount.ban.toString()} />
           </Button>
-          <Button color="primary" onClick={() => hadlestatusChange(4)}>
+          <Button color="primary" onClick={() => hadlestatusChange(4)} variant={status == 4 ? "contained" : ""} >
             <CustomBadge color="#bc0404" text="Deleted" count={statusWiseCount.deleted.toString()} />
           </Button>
         </Box>
         <Box mt={3}>
-          <Results customers={customers} />
+          <Results customers={customers} onModalClose={onModalClose} />
         </Box>
       </Container>
       <TablePagination
