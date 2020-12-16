@@ -24,8 +24,9 @@ import data from './data';
 
 import { toast } from 'react-toastify';
 import { API_BASE_URL } from "src/variable"
+import getReq from "src/apiCall/get"
+import patchReq from "src/apiCall/patch"
 import CustomBadge from 'src/components/CustomBadge'
-const axios = require('axios');
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,9 +56,9 @@ const AdminsListView = () => {
     'authorization': localStorage.getItem("token"),
     'language': "en"
   }
-  const getAdminsData = (pageNum = 0, pageSize = 10, status = -1, q = "") => new Promise((resolve, reject) => {
+  const getAdminsData = (pageNum = 0, pageSize = 10, status = -1, q = "") => new Promise(async (resolve, reject) => {
     // setIsLoading(true)
-    let apiurl = API_BASE_URL + `/admin?pageNum=${pageNum}&pageSize=${pageSize}&status=${status}`
+    let apiurl = `/admin?pageNum=${pageNum}&pageSize=${pageSize}&status=${status}`
 
     if (q != "") {
       apiurl = apiurl + `&q=${q}`
@@ -65,141 +66,48 @@ const AdminsListView = () => {
     console.log('apiurl---->>', apiurl)
 
     console.log("headers--->>", headers)
-    axios.get(apiurl, { headers: headers }).then((response) => {
-      // console.log("res-->>", response)
 
-      resolve(response.data);
-      setCustomers(response.data.data)
-      setStatusWiseCount(response.data.statusWiseCount)
-      console.log("state totalCount", response.data.totalCount)
+    let resData = await getReq(apiurl)
 
-      switch (status) {
-        case -1:
-          setTotalCount(response.data.statusWiseCount.all)
-          break;
-        case 0:
-          setTotalCount(response.data.statusWiseCount.pending)
-          break;
-        case 1:
-          setTotalCount(response.data.statusWiseCount.active)
-          break;
-        case 2:
-          setTotalCount(response.data.statusWiseCount.deactive)
-          break;
-        case 3:
-          setTotalCount(response.data.statusWiseCount.ban)
-          break;
-        case 4:
-          setTotalCount(response.data.statusWiseCount.deleted)
-          break;
-        default:
-          setTotalCount(response.data.totalCount)
-          break;
+    resolve(resData);
+    setCustomers(resData.data)
+    setStatusWiseCount(resData.statusWiseCount)
+    console.log("state totalCount", resData.totalCount)
 
-      }
-      console.log("state statusWiseCount", response.data.statusWiseCount)
-      console.log("state updated", response.data.data)
-      // setIsLoading(false)
+    switch (status) {
+      case -1:
+        setTotalCount(resData.statusWiseCount.all)
+        break;
+      case 0:
+        setTotalCount(resData.statusWiseCount.pending)
+        break;
+      case 1:
+        setTotalCount(resData.statusWiseCount.active)
+        break;
+      case 2:
+        setTotalCount(resData.statusWiseCount.deactive)
+        break;
+      case 3:
+        setTotalCount(resData.statusWiseCount.ban)
+        break;
+      case 4:
+        setTotalCount(resData.statusWiseCount.deleted)
+        break;
+      default:
+        setTotalCount(resData.totalCount)
+        break;
 
-    })
-      .catch((error) => {
-        console.log('error-->', error.response);
-        reject(error.response);
-        // setIsLoading(false)
-        if (error.response) {
-          if (error.response.status == 500) {
-            error.data.message = "Internal server error.."
-          }
-          if (error.response.status == 401) {
-            error.data.message = "Session Expire.."
-            toast.error(error.response.data.message, {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            localStorage.setItem('auth', "false");
-          }
-        } else {
-          error.response = { data: {} }
-          error.response.data.message = "Internal server error.."
-        }
-
-        // setIsLoading(false)
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-      });
+    }
+    console.log("state statusWiseCount", resData.statusWiseCount)
+    console.log("state updated", resData.data)
   })
-  const setAdminsStatusData = (body) => new Promise((resolve, reject) => {
-    const apiurl = API_BASE_URL + "/admin/status"
+  const setAdminsStatusData = (body) => new Promise(async (resolve, reject) => {
+    const apiurl = "/admin/status"
     console.log('apiurl---->>', apiurl)
     console.log('headers---->>', headers)
-    axios.patch(apiurl, body, { headers }).then((response) => {
-      // console.log("res-->>", response)
 
-      resolve(response.data);
-      console.log("res--->>", response.data)
-      // setIsLoading(false)
-      toast.success('Data updated...!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      // setrefresh(1)
-      setStatus(body.status)
-      // getAdminsData()
-      // alert("data uodated..");
-
-
-    })
-      .catch((error) => {
-        console.log('error-->', error.response);
-        reject(error.response);
-        // setIsLoading(false)
-        if (error.response.status == 500) {
-          error.data = {}
-          error.data.message = "Internal server error.."
-        }
-        if (error.response.status == 401) {
-          error.data = {}
-          error.data.message = "Session Expire.."
-          toast.error(error.response.data.message, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          localStorage.setItem('auth', "false");
-        }
-        // setIsLoading(false)
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
+    await patchReq(apiurl, body)
+    setStatus(body.status)
   })
 
 

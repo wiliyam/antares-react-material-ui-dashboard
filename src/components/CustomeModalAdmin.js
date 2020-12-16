@@ -16,9 +16,13 @@ import { Formik } from 'formik';
 
 import { toast } from 'react-toastify';
 import { API_BASE_URL } from "src/variable"
+import patchReq from "src/apiCall/patch"
+
+
 import CustomBadge from 'src/components/CustomBadge'
 const axios = require('axios');
 
+// const apiCall = require("src/apiCall/patch")
 const styles = (theme) => ({
     root: {
         margin: 0,
@@ -81,65 +85,6 @@ export default function CustomizedDialogs(props) {
         'language': "en"
     }
 
-    const setAdminsData = (body) => new Promise((resolve, reject) => {
-        const apiurl = API_BASE_URL + "/admin"
-        console.log('apiurl---->>', apiurl)
-        console.log('headers---->>', headers)
-        axios.patch(apiurl, body, { headers }).then((response) => {
-            // console.log("res-->>", response)
-
-            resolve(response.data);
-            console.log("state updated", response.data)
-            // setIsLoading(false)
-            toast.success('Data updated...!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-
-            // getAdminsData()
-            // alert("data uodated..");
-
-
-        })
-            .catch((error) => {
-                console.log('error-->', error.response);
-                reject(error.response);
-                // setIsLoading(false)
-                if (error.response.status == 500) {
-                    error.data = {}
-                    error.data.message = "Internal server error.."
-                }
-                if (error.response.status == 401) {
-                    error.data = {}
-                    error.data.message = "Session Expire.."
-                    toast.error(error.response.data.message, {
-                        position: "top-right",
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    localStorage.setItem('auth', "false");
-                }
-                // setIsLoading(false)
-                toast.error(error.response.data.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            });
-    })
 
     const handleUpdate = async (...params) => {
         const resDataForm = params[0]
@@ -153,12 +98,12 @@ export default function CustomizedDialogs(props) {
             countryCode: resDataForm.countryCode
         }
         console.log("dataToUpdate->", dataToUpdate)
-        setAdminsData(dataToUpdate)
+        await patchReq("/admin", dataToUpdate)
         handleClose()
     }
 
     const handlestatusChange = async (id, status) => {
-        await setAdminsData({ id, status })
+        await patchReq("/admin", { id, status })
         handleClose()
     }
 

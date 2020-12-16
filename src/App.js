@@ -32,6 +32,7 @@ const App = () => {
         pauseOnHover
       />
       {routing}
+
     </ThemeProvider>
   );
 };
