@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Search as SearchIcon, Edit as EditIcons } from 'react-feather';
 import {
   Avatar,
   Box,
@@ -16,7 +17,8 @@ import {
   TableRow,
   Typography,
   makeStyles,
-  Button
+  Button,
+  SvgIcon
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import CustomizedDialogs from 'src/components/CustomeModalAdmin'
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Results = ({ className, customers, onModalClose, ...rest }) => {
+const Results = ({ className, customers, onModalClose, onSelectId, ...rest }) => {
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [adminData, setAdminData] = React.useState({});
@@ -50,9 +52,9 @@ const Results = ({ className, customers, onModalClose, ...rest }) => {
     // setIsModalEdit(false)
   }, [isModalEdit])
 
-  const modalClose = () => {
+  const modalClose = (status) => {
     setIsModalEdit(false)
-    onModalClose()
+    onModalClose(status)
 
   }
 
@@ -61,12 +63,14 @@ const Results = ({ className, customers, onModalClose, ...rest }) => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedCustomerIds = customers.map((customer) => customer._id);
     } else {
       newSelectedCustomerIds = [];
     }
 
     setSelectedCustomerIds(newSelectedCustomerIds);
+    console.log("-------->>", newSelectedCustomerIds)
+    onSelectId(newSelectedCustomerIds)
   };
 
   const handleSelectOne = (event, id) => {
@@ -85,15 +89,16 @@ const Results = ({ className, customers, onModalClose, ...rest }) => {
         selectedCustomerIds.slice(selectedIndex + 1)
       );
     }
-    console.log("newSelectedCustomerIds->", newSelectedCustomerIds)
+    // console.log("newSelectedCustomerIds->", newSelectedCustomerIds)
     setSelectedCustomerIds(newSelectedCustomerIds);
+    onSelectId(newSelectedCustomerIds)
   };
 
 
 
 
   return (
-    isModalEdit ? <CustomizedDialogs isOpen={true} data={adminData} modalCloseAct={modalClose} /> :
+    isModalEdit ? <CustomizedDialogs isOpen={true} data={adminData} modalCloseAct={(status) => modalClose(status)} /> :
       <Card
         className={clsx(classes.root, className)}
         {...rest}
@@ -117,8 +122,8 @@ const Results = ({ className, customers, onModalClose, ...rest }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    Actiion
-                </TableCell>
+
+                  </TableCell>
                   <TableCell>
                     Name
                 </TableCell>
@@ -148,7 +153,7 @@ const Results = ({ className, customers, onModalClose, ...rest }) => {
                     hover
                     key={customer._id}
                     selected={selectedCustomerIds.indexOf(customer._id) !== -1}
-                    onClick={() => handleClick(customer)}
+                  // onClick={() => handleClick(customer)}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -177,21 +182,32 @@ const Results = ({ className, customers, onModalClose, ...rest }) => {
 
                     </TableCell>
                     <TableCell>
+                      <Button onClick={() => handleClick(customer)}>
+                        <SvgIcon
+                          fontSize="small"
+                          color="action"
+                        >
+                          <EditIcons />
+                        </SvgIcon>
+                      </Button>
+
+                    </TableCell>
+                    <TableCell>
                       <Box
                         alignItems="center"
                         display="flex"
                       >
-                        <Avatar
+                        {/* <Avatar
                           className={classes.avatar}
                           src={customer.profileImg || "https://via.placeholder.com/150"}
                         >
                           {getInitials(customer.name)}
-                        </Avatar>
+                        </Avatar> */}
                         <Typography
                           color="textPrimary"
                           variant="body1"
                         >
-                          {customer.name}
+                          {customer.firstName}
                         </Typography>
                       </Box>
                     </TableCell>

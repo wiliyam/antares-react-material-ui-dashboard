@@ -31,7 +31,7 @@ const Toolbar = ({ className, ...rest }) => {
       className={clsx(classes.root, className)}
       {...rest}
     >
-      <Box
+      {/* <Box
         display="flex"
         justifyContent="flex-end"
       >
@@ -47,7 +47,7 @@ const Toolbar = ({ className, ...rest }) => {
         >
           Add customer
         </Button>
-      </Box>
+      </Box> */}
       <Box mt={3}>
         <Card>
           <CardContent>

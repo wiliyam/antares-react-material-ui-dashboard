@@ -73,7 +73,7 @@ export default function CustomizedDialogs(props) {
 
     const handleClose = () => {
         setOpen(false);
-        props.modalCloseAct()
+        props.modalCloseAct(data.status)
     };
     const headers = {
         // "accept": "application/json",
@@ -196,6 +196,12 @@ export default function CustomizedDialogs(props) {
 
                                                 {data.status != 1 ? <Grid key={"Active"} item>
                                                     <Button
+                                                        style={{
+                                                            // borderRadius: 35,
+                                                            backgroundColor: "#45b034",
+                                                            // padding: "18px 36px",
+                                                            // fontSize: "18px"
+                                                        }}
                                                         color="primary"
                                                         disabled={isSubmitting}
                                                         fullWidth
@@ -209,6 +215,12 @@ export default function CustomizedDialogs(props) {
 
                                                 {data.status == 1 || data.status == 0 ? <Grid key={"Deactive"} item>
                                                     <Button
+                                                        style={{
+                                                            // borderRadius: 35,
+                                                            backgroundColor: "#2f48dc",
+                                                            // padding: "18px 36px",
+                                                            // fontSize: "18px"
+                                                        }}
                                                         color="primary"
                                                         disabled={isSubmitting}
                                                         fullWidth
@@ -223,6 +235,12 @@ export default function CustomizedDialogs(props) {
 
                                                 {data.status == 1 || data.status == 0 || data.status == 2 ? <Grid key={"Ban"} item>
                                                     <Button
+                                                        style={{
+                                                            // borderRadius: 35,
+                                                            backgroundColor: "#81137b",
+                                                            // padding: "18px 36px",
+                                                            // fontSize: "18px"
+                                                        }}
                                                         color="primary"
                                                         disabled={isSubmitting}
                                                         fullWidth
@@ -237,6 +255,12 @@ export default function CustomizedDialogs(props) {
 
                                                 {data.status != 4 ? <Grid key={"Delete"} item>
                                                     <Button
+                                                        style={{
+                                                            // borderRadius: 35,
+                                                            backgroundColor: "#bc0404",
+                                                            // padding: "18px 36px",
+                                                            // fontSize: "18px"
+                                                        }}
                                                         color="primary"
                                                         disabled={isSubmitting}
                                                         fullWidth
