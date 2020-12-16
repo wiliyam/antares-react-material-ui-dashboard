@@ -218,6 +218,19 @@ export default function CustomizedDialogs(props) {
                                                 </Grid> : ""}
 
 
+                                                <Grid key={"Update"} item>     <Button
+                                                    color="primary"
+                                                    disabled={isSubmitting}
+                                                    fullWidth
+                                                    size="large"
+                                                    type="submit"
+                                                    variant="contained"
+                                                >
+                                                    Update
+                                             </Button>
+                                                </Grid>
+
+
 
 
 
@@ -351,16 +364,7 @@ export default function CustomizedDialogs(props) {
                                     />
 
                                     <br />
-                                    <Button
-                                        color="primary"
-                                        disabled={isSubmitting}
-                                        fullWidth
-                                        size="large"
-                                        type="submit"
-                                        variant="contained"
-                                    >
-                                        Update
-                                             </Button>
+
                                 </form>
                             )}
                         </Formik>
