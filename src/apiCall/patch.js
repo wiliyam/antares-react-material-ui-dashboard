@@ -35,7 +35,7 @@ const patchReq = (url, body) => new Promise((resolve, reject) => {
 
     })
         .catch((error) => {
-            console.log('error-->', error.response);
+            console.log('error-->', error);
             reject(error.response);
             // setIsLoading(false)
             if (error.response.status == 500) {

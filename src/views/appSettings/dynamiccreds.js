@@ -20,6 +20,8 @@ import {
 } from '@material-ui/core';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import patchReq from "src/apiCall/patch"
+import getReq from "src/apiCall/get"
 import { toast } from 'react-toastify';
 
 import LoaderCom from 'src/components/Loader'
@@ -71,115 +73,30 @@ const Dynamiccreds = ({ className, ...rest }) => {
     'authorization': localStorage.getItem("token"),
     'language': "en"
   }
-  const getConfigData = () => new Promise((resolve, reject) => {
+  const getConfigData = () => new Promise(async (resolve, reject) => {
     setIsLoading(true)
-    const apiurl = API_BASE_URL + "/appConfig?type=0"
-    console.log('apiurl---->>', apiurl)
+    const apiurl = "/appConfig?type=0"
 
-    console.log("headers--->>", headers)
-    axios.get(apiurl, { headers: headers }).then((response) => {
-      // console.log("res-->>", response)
+    let resData = await getReq(apiurl)
 
-      resolve(response.data);
-      setGooglemapkey(response.data.data.keyAndSecrets.googleMapKey)
-      setJwtsecret(response.data.data.keyAndSecrets.jwtSecretKey)
-      setConfigId(response.data.data._id)
-      console.log("state updated", response.data.data)
-      setIsLoading(false)
+    resolve(resData);
+    setGooglemapkey(resData.data.keyAndSecrets.googleMapKey)
+    setJwtsecret(resData.data.keyAndSecrets.jwtSecretKey)
+    setConfigId(resData.data._id)
+    console.log("state updated", resData.data)
+    setIsLoading(false)
 
-    })
-      .catch((error) => {
-        console.log('error-->', error.response);
-        reject(error.response);
-        setIsLoading(false)
-        if (error.response.status == 500) {
-          error.data.message = "Internal server error.."
-        }
-        if (error.response.status == 401) {
-          error.data.message = "Session Expire.."
-          toast.error(error.response.data.message, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          localStorage.setItem('auth', "false");
-        }
-        setIsLoading(false)
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-      });
   })
 
-  const setConfigData = (body) => new Promise((resolve, reject) => {
-    const apiurl = API_BASE_URL + "/appConfig"
+  const setConfigData = (body) => new Promise(async (resolve, reject) => {
+    const apiurl = "/appConfig"
     console.log('apiurl---->>', apiurl)
     console.log('headers---->>', headers)
-    axios.patch(apiurl, body, { headers }).then((response) => {
-      // console.log("res-->>", response)
 
-      resolve(response.data);
-      console.log("state updated", response.data)
-      setIsLoading(false)
-      toast.success('Data updated...!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
-      getConfigData()
-      // alert("data uodated..");
-
-
-    })
-      .catch((error) => {
-        console.log('error-->', error.response);
-        reject(error.response);
-        setIsLoading(false)
-        if (error.response.status == 500) {
-          error.data = {}
-          error.data.message = "Internal server error.."
-        }
-        if (error.response.status == 401) {
-          error.data = {}
-          error.data.message = "Session Expire.."
-          toast.error(error.response.data.message, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          localStorage.setItem('auth', "false");
-        }
-        setIsLoading(false)
-        toast.error(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
+    let resData = await patchReq(apiurl, body)
+    resolve(resData);
+    console.log("state updated", resData)
+    setIsLoading(false)
   })
 
 
