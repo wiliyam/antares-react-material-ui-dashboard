@@ -1,14 +1,14 @@
 
-const authEnable = () => {
+const loadingEnable = () => {
     return {
-        type: "ENABLE"
+        type: "LOADING_ENABLE"
     }
 }
-const authDisable = () => {
+const loadingDisable = () => {
     return {
-        type: "DISABLE"
+        type: "LOADING_DISABLE"
     }
 }
 
 
-module.exports = { authEnable, authDisable }
+module.exports = { loadingEnable, loadingDisable }

@@ -10,6 +10,7 @@ const headers = {
 }
 
 const getReq = (url) => new Promise((resolve, reject) => {
+    console.log("localStorage.getItem-->>", localStorage.getItem("token"))
     const apiurl = API_BASE_URL + url
     console.log('apiurl---->>', apiurl)
     console.log('headers---->>', headers)

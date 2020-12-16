@@ -19,15 +19,15 @@ const postReq = (url, body) => new Promise((resolve, reject) => {
         resolve(response.data);
         console.log("state updated", response.data)
         // setIsLoading(false)
-        toast.success('Data updated...!', {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+        // toast.success('Data updated...!', {
+        //     position: "top-right",
+        //     autoClose: 3000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        // });
 
         // getAdminsData()
         // alert("data uodated..");

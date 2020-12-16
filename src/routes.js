@@ -10,7 +10,7 @@ import LoginView from 'src/views/auth/LoginView';
 import NotFoundView from 'src/views/errors/NotFoundView';
 import ProductListView from 'src/views/product/ProductListView';
 import RegisterView from 'src/views/auth/RegisterView';
-import SettingsView from 'src/views/settings/SettingsView';
+import RegionSettingsView from 'src/views/settings/RegionSettingsView';
 import AppSettingsView from 'src/views/appSettings'
 import Logout from 'src/views/logout'
 import ProtectedRoute from './protected'
@@ -25,7 +25,7 @@ const routes = [
       { path: 'admins', element: <ProtectedRoute component={AdminsListView} isAuthcomp={false} /> },
       { path: 'dashboard', element: <ProtectedRoute component={DashboardView} isAuthcomp={false} /> },
       { path: 'products', element: <ProtectedRoute component={ProductListView} isAuthcomp={false} /> },
-      { path: 'settings', element: <ProtectedRoute component={SettingsView} isAuthcomp={false} /> },
+      { path: 'region/settings', element: <ProtectedRoute component={RegionSettingsView} isAuthcomp={false} /> },
       { path: 'configuration', element: <ProtectedRoute component={AppSettingsView} isAuthcomp={false} /> },
       { path: 'logout', element: <ProtectedRoute component={Logout} isAuthcomp={false} /> },
       { path: '*', element: <Navigate to="/404" /> }

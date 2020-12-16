@@ -6,7 +6,7 @@ import { createStore } from 'redux'
 const reducer = require("./reducers")
 
 const AllReducer = combineReducers({
-    auth: reducer.auth
+    data: reducer.reducer
 })
 
 const store = createStore(AllReducer)

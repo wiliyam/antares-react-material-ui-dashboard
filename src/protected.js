@@ -4,17 +4,6 @@ import { Navigate } from 'react-router-dom'
 
 import { useDispatch, connect } from 'react-redux';
 //redux
-const mapStateToProps = (state) => {
-    return {
-        auth: state.auth.auth
-    }
-}
-const mapDispatchProps = (dispacth) => {
-    return {
-        authEnable: () => dispacth({ type: "ENABLE" }),
-        authDisable: () => dispacth({ type: "DISABLE" })
-    }
-}
 
 class ProtectedRoute extends React.Component {
 
@@ -42,4 +31,4 @@ class ProtectedRoute extends React.Component {
     }
 }
 
-export default connect(mapStateToProps)(ProtectedRoute);
+export default ProtectedRoute;

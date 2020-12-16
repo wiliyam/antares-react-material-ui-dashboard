@@ -27,6 +27,8 @@ import { authEnable } from '../../redux-store/actions';
 // import { auth } from '../../redux-store/reducers';
 import PositionedSnackbar from '../../components/toast';
 
+import postReq from "src/apiCall/post"
+
 const axios = require('axios');
 
 // store.subscribe(getStoreData);
@@ -47,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const authApi = (loginType, email, password, phone, countryCode) => new Promise((resolve, reject) => {
+const authApi = (loginType, email, password, phone, countryCode) => new Promise(async (resolve, reject) => {
 
 
-  let url = `${API_BASE_URL}/admin/login`
+  let url = `/admin/login`
   console.log('----', url);
 
   let body = {
@@ -64,40 +66,31 @@ const authApi = (loginType, email, password, phone, countryCode) => new Promise(
       password
     }
   }
-  console.log('body----', body);
-  axios.post(url, body).then((response) => {
-
-
+  try {
+    let resData = await postReq(url, body)
+    console.log('body----', body);
     console.log("setting up token")
-    localStorage.setItem('token', response.data.data.tokens.accessToken);
-    localStorage.setItem('reftoken', response.data.data.tokens.refreshToken);
+    localStorage.setItem('auth', true);
+    localStorage.setItem('token', resData.data.tokens.accessToken);
+    localStorage.setItem('reftoken', resData.data.tokens.refreshToken);
 
-    resolve(response.data);
-    // setIsLoading(false)
+    resolve(resData);
+  } catch (error) {
+    reject(error);
+  }
 
-  }).catch((error) => {
-
-    console.log(error.response)
-    if (error.response.status == 500) {
-      error.data = {}
-      error.response.data.message = "Internal server error"
-      // alert(error.response.data.message);
-    }
-    return reject(error.response.data.message);
-    // setIsLoading(false)
-  });
 });
 
 //redux
 const mapStateToProps = (state) => {
   return {
-    auth: state.auth.auth
+    isLoading: state.data.isLoading
   }
 }
 const mapDispatchProps = (dispacth) => {
   return {
-    authEnable: () => dispacth({ type: "ENABLE" }),
-    authDisable: () => dispacth({ type: "DISABLE" })
+    loadingEnable: () => dispacth({ type: "LOADING_ENABLE" }),
+    loadinggDisable: () => dispacth({ type: "LOADING_DISABLE" })
   }
 }
 
@@ -116,9 +109,9 @@ const LoginView = (props) => {
     // });
     console.log("component updated", props);
     // setMsg('logged in...');
-    if (props.auth) {
+    if (localStorage.getItem('auth')) {
       // setMsg('logged in...');
-      localStorage.setItem('auth', "true");
+      // localStorage.setItem('auth', "true");
       return navigate('/app/dashboard', { replace: true });
     }
   });
@@ -135,11 +128,9 @@ const LoginView = (props) => {
     // await setUser(data.user);
     // await setPass(data.password);
     try {
-
+      props.loadingEnable()
       const res = await authApi(1, data.email, data.password);
       console.log('res--->', res);
-
-      // setMsg(res.data.message);
       toast.dark('🧑🏼‍🚀 Now you login into anatres world!', {
         position: "top-right",
         autoClose: 3000,
@@ -149,9 +140,9 @@ const LoginView = (props) => {
         draggable: true,
         progress: undefined,
       });
-
-      props.authEnable()
-
+      props.loadinggDisable()
+      return navigate('/app/dashboard', { replace: true });
+      // setMsg(res.data.message);
       // } 
     } catch (error) {
       // setMsg(error);
@@ -164,6 +155,7 @@ const LoginView = (props) => {
         draggable: true,
         progress: undefined,
       });
+      props.loadinggDisable()
       console.log('error-->', error);
     }
 
