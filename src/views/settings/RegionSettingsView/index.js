@@ -5,7 +5,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import Password from './Password';
+import MapView from './MapView';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,12 +22,12 @@ const RegionSettingsView = () => {
   return (
     <Page
       className={classes.root}
-      title="Settings"
+      title="Region Settings"
     >
       <Container maxWidth="lg">
 
         <Box mt={3}>
-          <Password />
+          <MapView />
         </Box>
       </Container>
     </Page>

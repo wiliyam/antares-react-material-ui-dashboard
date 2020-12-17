@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 
 import { Search as SearchIcon, Edit as EditIcons } from 'react-feather';
+import { useDispatch, connect } from 'react-redux';
 
 import Page from 'src/components/Page';
 import Results from './Results';
@@ -39,8 +40,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+//redux
+const mapStateToProps = (state) => {
+  return {
+    isLoading: state.data.isLoading
+  }
+}
+const mapDispatchProps = (dispacth) => {
+  return {
+    loadingEnable: () => dispacth({ type: "LOADING_ENABLE" }),
+    loadingDisable: () => dispacth({ type: "LOADING_DISABLE" })
+  }
+}
 
-const AdminsListView = () => {
+
+const AdminsListView = (props) => {
   const classes = useStyles();
   const [customers, setCustomers] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -51,11 +65,7 @@ const AdminsListView = () => {
   const [refresh, setrefresh] = useState(1);
   const [sIds, setSIds] = useState([]);
   const [statusWiseCount, setStatusWiseCount] = useState({ pending: 0, all: 0, active: 0, deactive: 0, ban: 0, deleted: 0 });
-  const headers = {
-    // "accept": "application/json",
-    'authorization': localStorage.getItem("token"),
-    'language': "en"
-  }
+
   const getAdminsData = (pageNum = 0, pageSize = 10, status = -1, q = "") => new Promise(async (resolve, reject) => {
     // setIsLoading(true)
     let apiurl = `/admin?pageNum=${pageNum}&pageSize=${pageSize}&status=${status}`
@@ -65,49 +75,60 @@ const AdminsListView = () => {
     }
     console.log('apiurl---->>', apiurl)
 
-    console.log("headers--->>", headers)
+    try {
+      props.loadingEnable()
+      let resData = await getReq(apiurl)
 
-    let resData = await getReq(apiurl)
+      resolve(resData);
+      setCustomers(resData.data)
+      setStatusWiseCount(resData.statusWiseCount)
+      console.log("state totalCount", resData.totalCount)
 
-    resolve(resData);
-    setCustomers(resData.data)
-    setStatusWiseCount(resData.statusWiseCount)
-    console.log("state totalCount", resData.totalCount)
-
-    switch (status) {
-      case -1:
-        setTotalCount(resData.statusWiseCount.all)
-        break;
-      case 0:
-        setTotalCount(resData.statusWiseCount.pending)
-        break;
-      case 1:
-        setTotalCount(resData.statusWiseCount.active)
-        break;
-      case 2:
-        setTotalCount(resData.statusWiseCount.deactive)
-        break;
-      case 3:
-        setTotalCount(resData.statusWiseCount.ban)
-        break;
-      case 4:
-        setTotalCount(resData.statusWiseCount.deleted)
-        break;
-      default:
-        setTotalCount(resData.totalCount)
-        break;
-
+      switch (status) {
+        case -1:
+          setTotalCount(resData.statusWiseCount.all)
+          break;
+        case 0:
+          setTotalCount(resData.statusWiseCount.pending)
+          break;
+        case 1:
+          setTotalCount(resData.statusWiseCount.active)
+          break;
+        case 2:
+          setTotalCount(resData.statusWiseCount.deactive)
+          break;
+        case 3:
+          setTotalCount(resData.statusWiseCount.ban)
+          break;
+        case 4:
+          setTotalCount(resData.statusWiseCount.deleted)
+          break;
+        default:
+          setTotalCount(resData.totalCount)
+          break;
+      }
+      console.log("state statusWiseCount", resData.statusWiseCount)
+      console.log("state updated", resData.data)
+      props.loadingDisable()
+    } catch (error) {
+      props.loadingDisable()
     }
-    console.log("state statusWiseCount", resData.statusWiseCount)
-    console.log("state updated", resData.data)
+
+
+
   })
   const setAdminsStatusData = (body) => new Promise(async (resolve, reject) => {
     const apiurl = "/admin/status"
     console.log('apiurl---->>', apiurl)
-    console.log('headers---->>', headers)
+    try {
+      props.loadingEnable()
+      await patchReq(apiurl, body)
+      setStatus(body.status)
+      props.loadingDisable()
+    } catch (error) {
+      props.loadingDisable()
+    }
 
-    await patchReq(apiurl, body)
-    setStatus(body.status)
   })
 
 
@@ -166,7 +187,7 @@ const AdminsListView = () => {
   return (
     <Page
       className={classes.root}
-      title="Customers"
+      title="Admins"
     >
       <Container maxWidth={false}>
         {/* <Toolbar /> */}
@@ -328,4 +349,4 @@ const AdminsListView = () => {
   );
 };
 
-export default AdminsListView;
+export default connect(mapStateToProps, mapDispatchProps)(AdminsListView);

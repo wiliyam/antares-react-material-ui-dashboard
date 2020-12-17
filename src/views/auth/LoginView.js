@@ -89,7 +89,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispacth) => {
   return {
     loadingEnable: () => dispacth({ type: "LOADING_ENABLE" }),
-    loadinggDisable: () => dispacth({ type: "LOADING_DISABLE" })
+    loadingDisable: () => dispacth({ type: "LOADING_DISABLE" })
   }
 }
 
@@ -142,7 +142,7 @@ const LoginView = (props) => {
         draggable: true,
         progress: undefined,
       });
-      props.loadinggDisable()
+      props.loadingDisable()
 
       // setMsg(res.data.message);
       // } 
@@ -157,7 +157,7 @@ const LoginView = (props) => {
         draggable: true,
         progress: undefined,
       });
-      props.loadinggDisable()
+      props.loadingDisable()
       console.log('error-->', error);
     }
 
