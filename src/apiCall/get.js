@@ -1,16 +1,36 @@
 import { toast } from 'react-toastify';
 import { API_BASE_URL } from "src/variable"
+import { useDispatch, connect } from 'react-redux';
+
 const axios = require('axios');
 
 
-const headers = {
-    // "accept": "application/json",
-    'authorization': localStorage.getItem("token"),
-    'language': "en"
+
+//redux
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.data.isLoading
+    }
+}
+const mapDispatchProps = (dispacth) => {
+    return {
+        loadingEnable: () => dispacth({ type: "LOADING_ENABLE" }),
+        loadinggDisable: () => dispacth({ type: "LOADING_DISABLE" })
+    }
 }
 
 const getReq = (url) => new Promise((resolve, reject) => {
-    console.log("localStorage.getItem-->>", localStorage.getItem("token"))
+
+
+    const token = localStorage.getItem("token")
+    console.log("token-->>", token)
+
+
+    const headers = {
+        // "accept": "application/json",
+        'authorization': token,
+        'language': "en"
+    }
     const apiurl = API_BASE_URL + url
     console.log('apiurl---->>', apiurl)
     console.log('headers---->>', headers)

@@ -29,7 +29,6 @@ import PositionedSnackbar from '../../components/toast';
 
 import postReq from "src/apiCall/post"
 
-const axios = require('axios');
 
 // store.subscribe(getStoreData);
 
@@ -68,7 +67,7 @@ const authApi = (loginType, email, password, phone, countryCode) => new Promise(
   }
   try {
     let resData = await postReq(url, body)
-    console.log('body----', body);
+    console.log('resData.data.tokens.accessToken----', resData.data.tokens.accessToken);
     console.log("setting up token")
     localStorage.setItem('auth', true);
     localStorage.setItem('token', resData.data.tokens.accessToken);
@@ -97,6 +96,8 @@ const mapDispatchProps = (dispacth) => {
 const LoginView = (props) => {
 
 
+  let [logedIn, setLogedIn] = useState(false)
+
   useEffect(() => {
     // toast.dark(' 🧑🏼‍🚀  Welcome To Anatres...', {
     //   position: "top-right",
@@ -109,12 +110,12 @@ const LoginView = (props) => {
     // });
     console.log("component updated", props);
     // setMsg('logged in...');
-    if (localStorage.getItem('auth')) {
+    if (logedIn) {
       // setMsg('logged in...');
       // localStorage.setItem('auth', "true");
       return navigate('/app/dashboard', { replace: true });
     }
-  });
+  }, [logedIn]);
 
   const classes = useStyles();
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ const LoginView = (props) => {
       props.loadingEnable()
       const res = await authApi(1, data.email, data.password);
       console.log('res--->', res);
+      setLogedIn(true)
       toast.dark('🧑🏼‍🚀 Now you login into anatres world!', {
         position: "top-right",
         autoClose: 3000,
@@ -141,7 +143,7 @@ const LoginView = (props) => {
         progress: undefined,
       });
       props.loadinggDisable()
-      return navigate('/app/dashboard', { replace: true });
+
       // setMsg(res.data.message);
       // } 
     } catch (error) {
